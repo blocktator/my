@@ -1602,7 +1602,7 @@ telnet						install
 thunderbird					install
 thunderbird-globalmenu				install
 thunderbird-gnome-support			install
-tig						deinstall
+tig						install
 time						install
 tk						install
 tk8.4						install
