@@ -10,6 +10,12 @@ Setup
 
 Usage
 
+  my [package|packages|system] [show]
+  my [package|packages|system]
+
+      my system
+      my packages show
+
   my [package|packages|system] [add|install] package1 package2
 
       my package add tig
@@ -24,13 +30,15 @@ Usage
 
       my packages snapshot
 
-  my [package|packages|system] [show]
-  my [package|packages|system]
-
-      my system
-
-
   my [package|packages|system] [update]
-  my [package|packages|system]
 
       my system update
+
+  my [package|packages|system] [checkout] branch_or_hash_value
+
+      my system checkout b32f342
+      my system checkout branch_name
+
+  my [package|packages|system] [tag] branch
+
+      my packages tag branch_name

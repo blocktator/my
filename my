@@ -103,6 +103,9 @@ module Package
     `git checkout #{version}`
   end
 
+  def self.tag(branch)
+    `git checkout -b #{branch}`
+  end
 end
 
 My.new(ARGV).run
