@@ -1,0 +1,36 @@
+Setup
+
+* Make sure git is installed on the system
+
+* Sym Link the directory to a .my directory
+  ln -s projects/my .my
+
+* Include the following path in ~/.bashrc
+  export PATH=$PATH:~/.my
+
+Usage
+
+  my [package|packages|system] [add|install] package1 package2
+
+      my package add tig
+      my packages install tig gitk
+
+  my [package|packages|system] [delete|uninstall|remove] package1 package2
+
+      my packages delete tig
+      my system remove tig gitk
+
+  my [package|packages|system] [snapshot]
+
+      my packages snapshot
+
+  my [package|packages|system] [show]
+  my [package|packages|system]
+
+      my system
+
+
+  my [package|packages|system] [update]
+  my [package|packages|system]
+
+      my system update

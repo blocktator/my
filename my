@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+
+$my_directory = File.dirname(__FILE__)
+Dir.chdir($my_directory)
+
+class My
+
+  attr_reader :args
+
+  def initialize(args)
+    @args = args
+  end
+
+  def run
+    subsystem.run(args[1..-1])
+  rescue => e
+    puts `cat README`
+  end
+
+  def subsystem 
+    case args[0]
+      when 'package', 'packages', 'system'
+        then Package
+      else 
+        raise 'Subsystem was not specified'
+    end
+  end
+end
+
+module Package
+
+  SNAPSHOT_FILE = $my_directory + "/package/list.txt"
+  
+  def self.run(args)
+    if args[0]
+      send(*args)
+    else
+      show
+    end
+  end
+
+  def self.add(*args)
+    snapshot("before adding package: #{args.join(', ')}")
+    puts 'Adding the following packages:'
+    args.each do |a|
+      puts " * #{a}"
+      `echo "#{a} install" >> #{SNAPSHOT_FILE}`
+    end
+    update
+    snapshot("after adding package: #{args.join(', ')}")
+  end
+
+  def self.install(*args)
+    add(*args) 
+  end
+
+  def self.delete(*args)
+    snapshot("before deleting package: #{args.join(', ')}")
+    puts 'Deleting the following packages'
+    args.each do |a|
+      puts " * #{a}"
+      `echo "#{a} deinstall" >> #{SNAPSHOT_FILE}`
+    end
+    update
+    snapshot("after deleting package: #{args.join(', ')}")
+  end
+  
+  def self.uninstall(*args)
+    delete(*args) 
+  end
+  
+  def self.remove(*args)
+    delete(*args) 
+  end
+
+  def self.update
+    puts "Updating packages from package list: #{SNAPSHOT_FILE}"
+    `sudo dpkg --set-selections < #{SNAPSHOT_FILE}`
+    puts `sudo apt-get dselect-upgrade -y`
+  end
+
+  def self.snapshot(commit_message = nil)
+    puts "Taking snapshot of current packages: #{SNAPSHOT_FILE}"
+    `sudo dpkg --get-selections > #{SNAPSHOT_FILE}`
+    `git add #{SNAPSHOT_FILE}`
+    `git commit -m "snapshot #{commit_message}"`
+  end
+
+  def self.show
+    puts `cat #{SNAPSHOT_FILE}`
+  end
+
+  def self.search(*args)
+    puts "Searching for packages"
+    args.each do |a|
+      puts " * #{a}"
+      puts "======================================"
+      puts `apt-cache search #{a}`
+    end
+  end
+
+  def self.checkout(version)
+    `git checkout #{version}`
+  end
+
+end
+
+My.new(ARGV).run
